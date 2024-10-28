@@ -1,0 +1,237 @@
+====================
+switch 1
+====================
+enable
+configure terminal
+vlan 20
+name local1
+exit
+vlan 40
+name local2
+exit
+int range fa0/1-2
+switchport mode access
+switchport access vlan 20
+exit
+int fa0/3
+switchport mode access
+switchport access vlan 40
+exit
+int gig0/1
+switchport mode trunk
+exit
+
+====================
+router 1
+====================
+enable
+config t
+int gig0/0
+no ip address
+no shut
+exit
+int gig0/0.20
+encapsulation dot1Q 20
+ip address 192.168.0.1 255.255.255.0
+exit
+int gig0/0.40
+encapsulation dot1Q 40
+ip address 192.168.1.1 255.255.255.0
+exit
+int gig0/1
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+int gig0/2
+ip address 192.168.3.1 255.255.255.0
+no shutdown
+exit
+ip dhcp pool Tanvir20
+network 192.168.0.0 255.255.255.0
+default-router 192.168.0.1
+dns-server 192.168.8.2
+exit
+ip dhcp excluded-address 192.168.0.1
+ip dhcp pool Tanvir40
+network 192.168.1.0 255.255.255.0
+default-router 192.168.1.1
+dns-server 192.168.8.2
+exit
+ip dhcp excluded-address 192.168.0.1
+router ospf 1
+network 192.168.0.0 0.0.0.255 area 1
+network 192.168.1.0 0.0.0.255 area 1
+network 192.168.2.0 0.0.0.255 area 1
+network 192.168.3.0 0.0.0.255 area 1
+
+===========================
+SWITCH4
+===========================
+enable
+configure terminal
+vlan 40
+name tanvir1
+exit
+vlan 50
+name tanvir2
+exit
+int range fa0/1-2
+switchport mode access
+switchport access vlan 40
+exit
+int range fa0/3-4
+switchport mode access
+switchport access vlan 50
+exit
+int gig0/1
+switchport mode trunk
+exit
+
+===========================
+router 2
+===========================
+en
+config t
+enable
+config t
+int gig0/0
+ip address 192.168.2.2 255.255.255.0
+no shut
+exit
+int gig0/1
+ip address 192.168.5.1 255.255.255.0
+no shutdown
+exit
+int gig0/2
+no shut
+exit
+int gig0/2.40
+encapsulation dot1Q 40
+ip address 192.168.10.1 255.255.255.0
+ip helper-address 192.168.8.2
+exit
+int gig0/2.50
+encapsulation dot1Q 50
+ip address 192.168.11.1 255.255.255.0
+ip helper-address 192.168.8.2
+exit
+router ospf 2
+network 192.168.2.0 0.0.0.255 area 1
+network 192.168.5.0 0.0.0.255 area 1
+network 192.168.10.0 0.0.0.255 area 1
+network 192.168.11.0 0.0.0.255 area 1
+====================
+switch 2
+===========================
+enable
+configure terminal
+vlan 10
+name local1
+exit
+vlan 20
+name local2
+exit
+vlan 30
+name server1
+exit
+int range fa0/1-2
+switchport mode access
+switchport access vlan 10
+exit
+int range fa0/3-4
+switchport mode access
+switchport access vlan 20
+exit
+int range fa0/5-10
+switchport mode access
+switchport access vlan 30
+exit
+int gig0/1
+switchport mode trunk
+exit
+
+===========================
+router3
+===========================
+enable
+config terminal
+int gig0/2
+no ip address
+no shut
+exit
+int gig0/2.10
+encapsulation dot1Q 10
+ip address 192.168.6.1 255.255.255.0
+exit
+int gig0/2.20
+encapsulation dot1Q 20
+ip address 192.168.7.1 255.255.255.0
+exit
+int gig0/2.30
+encapsulation dot1Q 30
+ip address 192.168.8.1 255.255.255.0
+exit
+int gig0/1
+ip address 192.168.4.2 255.255.255.0
+no shut
+exit
+int gig0/0
+ip address 192.168.5.2 255.255.255.0
+no shutdown
+exit
+int gig0/2.10
+ip helper-address 192.168.8.2
+exit
+int gig0/2.20
+ip helper-address 192.168.8.2
+exit
+int gig0/2.30
+ip helper-address 192.168.8.2
+exit
+router ospf 3
+network 192.168.4.0 0.0.0.255 area 1
+network 192.168.5.0 0.0.0.255 area 1
+network 192.168.6.0 0.0.0.255 area 1
+network 192.168.7.0 0.0.0.255 area 1
+network 192.168.8.0 0.0.0.255 area 1
+
+===================================
+EXTRAS ROUTER 3
+++++++++++++++++++++++++++++++++++
+
+ip dhcp pool Tanvir10
+network 192.168.6.0 255.255.255.0
+default-router 192.168.6.1
+dns-server 192.168.8.2
+exit
+ip dhcp excluded-address 192.168.6.1
+ip dhcp pool Tanvir20
+network 192.168.7.0 255.255.255.0
+default-router 192.168.7.1
+dns-server 192.168.8.2
+exit
+ip dhcp excluded-address 192.168.7.1
+
+==========================
+router 4
+====================
+enable
+config t
+int gig0/0
+ip address 192.168.3.2 255.255.255.0
+no shut
+exit
+int gig0/1
+ip address 192.168.4.1 255.255.255.0
+no shutdown
+exit
+int gig0/2
+ip address 192.168.9.1 255.255.255.0
+no shutdown
+exit
+router ospf 4
+network 192.168.3.0 0.0.0.255 area 1
+network 192.168.4.0 0.0.0.255 area 1
+network 192.168.9.0 0.0.0.255 area 1
+
+===========================

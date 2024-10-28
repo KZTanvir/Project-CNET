@@ -1,0 +1,109 @@
+================
+switch 1
+================
+en
+config t
+vlan 10
+name tanvir1
+exit
+vlan 20
+name tanvir2
+exit
+int range fa0/1-2
+switchport mode access
+switchport access vlan 10
+exit
+int fa0/3
+switchport mode access
+switchport access vlan 20
+exit
+int gig0/1
+switchport mode trunk
+exit
+
+================
+================
+router 1
+================
+en
+config t
+int gig0/0
+no ip add
+no shutdown
+exit
+int gig0/0.10
+encapsulation dot1Q 10
+ip address 192.168.5.1 255.255.255.0
+exit
+int gig0/0.20
+encapsulation dot1Q 20
+ip address 192.168.6.1 255.255.255.0
+exit
+int gig0/1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+int gig0/2
+ip address 192.168.3.1 255.255.255.0
+no shutdown
+exit
+ip dhcp pool Tanvir10
+network 192.168.5.0 255.255.255.0
+default-router 192.168.5.1
+dns-server 192.168.4.5
+exit
+ip dhcp excluded-address 192.168.5.1
+ip dhcp pool Tanvir20
+network 192.168.6.0 255.255.255.0
+default-router 192.168.6.1
+dns-server 192.168.4.5
+exit
+ip dhcp excluded-address 192.168.6.1
+router ospf 3
+network 192.168.5.0 0.0.0.255 area 1
+network 192.168.6.0 0.0.0.255 area 1
+network 192.168.1.0 0.0.0.255 area 1
+network 192.168.3.0 0.0.0.255 area 1
+exit
+
+================
+router 2
+================
+en
+config t
+int gig0/0
+ip address 192.168.1.2 255.255.255.0
+no shutdown
+exit
+int gig0/1
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+router ospf 2
+network 192.168.1.0 0.0.0.255 area 1
+network 192.168.2.0 0.0.0.255 area 1
+exit
+
+================
+router 3(config server first)
+================
+en
+config t
+int gig0/2
+ip address 192.168.4.1 255.255.255.0
+no shutdown
+exit
+int gig0/0
+ip address 192.168.2.2 255.255.255.0
+no shutdown
+exit
+int gig0/1
+ip address 192.168.3.2 255.255.255.0
+no shutdown
+exit
+router ospf 1
+network 192.168.4.0 0.0.0.255 area 1
+network 192.168.3.0 0.0.0.255 area 1
+network 192.168.2.0 0.0.0.255 area 1
+
+================
